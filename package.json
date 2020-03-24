@@ -1,0 +1,30 @@
+{
+  "name": "@shiftpi/nextcloud-chunk-upload",
+  "version": "1.0.0",
+  "description": "Nextcloud chunk upload client",
+  "main": "dist/index.js",
+  "author": "Andreas Rutz <andreas.rutz@posteo.de>",
+  "license": "MIT",
+  "keywords": [
+    "nextcloud",
+    "webdav",
+    "client",
+    "upload",
+    "chunk"
+  ],
+  "scripts": {
+    "build": "babel --out-dir dist/ src/",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/preset-env": "^7.9.0",
+    "jest": "^25.1.0",
+    "moxios": "^0.4.0"
+  },
+  "dependencies": {
+    "axios": "^0.19.2"
+  }
+}
