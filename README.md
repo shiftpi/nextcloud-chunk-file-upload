@@ -60,7 +60,7 @@ A simple upload code could look like this:
 ```javascript
 const Upload = require('nextcloud-chunk-upload');
 
-const upload = new Upload('https://example..com/remote.php/dav', 'myuser', 'myspace', 'secret');
+const upload = new Upload('https://example.com/remote.php/dav', 'myuser', 'myspace', 'secret');
 
 upload.uploadFile('/path/to/localfile.jpg', '/path/to/remotefile.jpg')
   .then(event => {
