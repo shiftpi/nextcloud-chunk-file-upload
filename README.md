@@ -41,7 +41,7 @@ The return value of this method is Promise, indicating the success or failure of
 `Upload.uploadFile` returns a promise containing an event object. This object holds information about the result of the
 upload.
 
-### Member variables
+#### Member variables
 |Name    |Type   |Description                         |
 |--------|-------|------------------------------------|
 |filename|string |Local file path                     |
@@ -49,7 +49,7 @@ upload.
 |message |string |Event reason                        |
 |complete|boolean|Whether the upload was successful   |
 
-### Methods
+#### Methods
 **toString(): string**
 
 Returns a string containg the event data
