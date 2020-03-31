@@ -51,6 +51,7 @@ upload.
 
 ### Methods
 **toString(): string**
+
 Returns a string containg the event data
  
 
