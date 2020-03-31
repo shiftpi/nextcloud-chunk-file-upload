@@ -1,0 +1,9 @@
+.idea
+__mocks__
+coverage
+node_modules
+src
+test
+.babelrc
+debug.js
+jest.config.js
