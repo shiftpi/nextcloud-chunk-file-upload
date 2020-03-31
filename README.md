@@ -43,3 +43,4 @@ upload.uploadFile('/path/to/localfile.jpg', '/path/to/remotefile.jpg')
 ```
 
 ## License
+This project is licensed under the MIT license. See LICENSE file.
