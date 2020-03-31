@@ -21,11 +21,11 @@ class Upload {
     return new Promise((async (resolve, reject) => {
       const chunkPath = `${this.#uploadUrl}/${remotePath.replace(/^\/+/, '')}-${crypto.randomBytes(16).toString('hex')}`;
 
-      await axios({
+      await axios.request({
         method: 'mkcol',
         url: chunkPath,
         auth: this.#auth
-      }).catch(() => new Event(localPath, null, 'Failed creating directory'));
+      }).catch(() => reject(new Event(localPath, null, 'Failed creating directory')));
 
       const identifierLength = ('' + fs.statSync(localPath)['size']).length;
 
@@ -53,9 +53,12 @@ class Upload {
 
           let success = false;
 
-          for (let i = 0; i < retryChunks && !success; i++) {
-            success = await axios.put(`${chunkPath}/${offsetIdentifier}-${limitIdentifier}`, chunk, {
-              auth: this.#auth
+          for (let i = 0; i <= retryChunks && !success; i++) {
+            success = await axios.request({
+              method: 'put',
+              url: `${chunkPath}/${offsetIdentifier}-${limitIdentifier}`,
+              auth: this.#auth,
+              data: chunk
             }).then(() => true)
               .catch(() => false);
           }
@@ -67,7 +70,7 @@ class Upload {
           chunkNo++;
         }
 
-        await axios({
+        await axios.request({
           method: 'move',
           url: `${chunkPath}/.file`,
           auth: this.#auth,
