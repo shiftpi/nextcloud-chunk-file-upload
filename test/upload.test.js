@@ -64,7 +64,7 @@ describe('upload', () => {
     return uploader.uploadFile('/foobar.jpg', '/foo/bar/baz.jpg', 100, 3)
       .catch(e => {
         expect(require('axios').__mkcolCnt).toBe(1);
-        expect(require('axios').__putCnt).toBe(4);
+        expect(require('axios').__putCnt).toBe(6);
         expect(require('axios').__moveCnt).toBe(0);
 
         expect(e.chunkNo).toBe(0);
