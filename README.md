@@ -1,4 +1,4 @@
-# Nextcloud Chunk Upload
+# Nextcloud Chunk File Upload
 Upload files to Nextcloud using chunks
 
 Nextcloud offers a chunked upload library, which makes your life a lot easier, if you want to upload large files to
@@ -9,7 +9,7 @@ Use this library if you want to build some sort of upload client in node.js and 
 ## Installation
 This package is published on NPM so you can simply type:
 ```
-npm install --save nextcloud-chunk-upload
+npm install --save nextcloud-chunk-file-upload
 ```
 
 ## Usage
@@ -58,7 +58,7 @@ Returns a string containg the event data
 ### Example
 A simple upload code could look like this:
 ```javascript
-const Upload = require('nextcloud-chunk-upload');
+const Upload = require('nextcloud-chunk-file-upload');
 
 const upload = new Upload('https://example.com/remote.php/dav', 'myuser', 'myspace', 'secret');
 

@@ -1,7 +1,7 @@
 {
-  "name": "nextcloud-chunk-upload",
+  "name": "nextcloud-chunk-file-upload",
   "version": "1.0.0",
-  "description": "Nextcloud chunk upload client",
+  "description": "Nextcloud chunk file upload client",
   "main": "dist/index.js",
   "author": "Andreas Rutz <andreas.rutz@posteo.de>",
   "license": "MIT",
@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/shiftpi/nextcloud-chunk-upload.git"
+    "url": "https://github.com/shiftpi/nextcloud-chunk-file-upload.git"
   },
   "bugs": {
-    "url": "https://github.com/shiftpi/nextcloud-chunk-upload/issues"
+    "url": "https://github.com/shiftpi/nextcloud-chunk-file-upload/issues"
   },
-  "homepage": "https://github.com/shiftpi/nextcloud-chunk-upload",
+  "homepage": "https://github.com/shiftpi/nextcloud-chunk-file-upload",
   "dependencies": {
     "axios": "^0.19.2"
   },
