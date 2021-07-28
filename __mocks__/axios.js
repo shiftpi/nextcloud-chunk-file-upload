@@ -19,7 +19,7 @@ axios.request = config => {
     (config.method.match(/^mkcol$/i)
       && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/foo\/bar\/baz\.jpg-[0-9a-f]{32}$/i))
     || (config.method.match(/^put$/i)
-      && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/foo\/bar\/baz.jpg-[0-9a-f]{32}\/\d{3}-\d{3}$/i))
+      && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/foo\/bar\/baz.jpg-[0-9a-f]{32}\/\d{10}$/i))
     || (config.method.match(/^move$/i)
       && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/foo\/bar\/baz.jpg-[0-9a-f]{32}\/\.file$/i)
       && config.headers.Destination === 'https://remoteurl/files/foospace/foo/bar/baz.jpg')

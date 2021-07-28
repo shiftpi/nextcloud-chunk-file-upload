@@ -17,7 +17,7 @@ class Upload {
     };
   }
 
-  uploadFile(localPath, remotePath, chunkSize = 2 * 1024 * 1024, retryChunks = 5) {
+  uploadStream(stream, remotePath, retryChunks = 5) {
     return new Promise((async (resolve, reject) => {
       const chunkPath = `${this.#uploadUrl}/${remotePath.replace(/^\/+/, '')}-${crypto.randomBytes(16).toString('hex')}`;
 
@@ -25,14 +25,10 @@ class Upload {
         method: 'mkcol',
         url: chunkPath,
         auth: this.#auth
-      }).catch(() => reject(new Event(localPath, null, 'Failed creating directory')));
+      }).catch(() => reject(new Event(undefined, null, 'Failed creating remote directory')));
 
-      const identifierLength = ('' + fs.statSync(localPath)['size']).length;
-
-      const stream = fs.createReadStream(localPath, {highWaterMark: chunkSize});
-      let chunkNo = 0;
-      let chunkOffset = 0;
       let readable = false;
+      let chunkNo = 0;
 
       stream.on('readable', async () => {
         // Make sure the upload happens only one time. The event is triggered twice: The first time when the stream is
@@ -46,17 +42,15 @@ class Upload {
         let chunk;
 
         while ((chunk = stream.read())) {
-          const offsetIdentifier = ('' + chunkOffset).padStart(identifierLength, '0');
-          chunkOffset += chunk.length - 1;
-          const limitIdentifier = ('' + chunkOffset).padStart(identifierLength, '0');
-          chunkOffset++;
+          // TODO: padStart
+          const offsetIdentifier = ('' + chunkNo).padStart(10, '0');
 
           let success = false;
 
           for (let i = 0; i <= retryChunks && !success; i++) {
             success = await axios.request({
               method: 'put',
-              url: `${chunkPath}/${offsetIdentifier}-${limitIdentifier}`,
+              url: `${chunkPath}/${offsetIdentifier}`,
               auth: this.#auth,
               data: chunk
             }).then(() => true)
@@ -64,7 +58,7 @@ class Upload {
           }
 
           if (!success) {
-            return reject(new Event(localPath, chunkNo, 'Failed uploading chunk, max retries reached'));
+            return reject(new Event(undefined, chunkNo, 'Failed uploading chunk, max retries reached'));
           }
 
           chunkNo++;
@@ -77,12 +71,26 @@ class Upload {
           headers: {
             Destination: `${this.#filesUrl}/${remotePath.replace(/^\/+/, '')}`
           }
-        }).then(() => resolve(new Event(localPath, chunkNo, null, true)))
-          .catch(() => reject(new Event(localPath, chunkNo, 'Failed to glue the chunks together')));
+        }).then(() => resolve(new Event(undefined, chunkNo, null, true)))
+          .catch(() => reject(new Event(undefined, chunkNo, 'Failed to glue the chunks together')));
       }).on('error', () => {
-        reject(new Event(localPath, chunkNo, 'Failed reading the local file'));
+        reject(new Event(undefined, chunkNo, 'Failed reading from the stream'));
       });
     }));
+  }
+
+  uploadFile(localPath, remotePath, chunkSize = 2 * 1024 * 1024, retryChunks) {
+    const stream = fs.createReadStream(localPath, {highWaterMark: chunkSize});
+
+    return this.uploadStream(stream, remotePath, retryChunks)
+      .then(event => {
+        event.filename = localPath;
+        return event;
+      })
+      .catch(event => {
+        event.filename = localPath;
+        return event;
+      });
   }
 }
 

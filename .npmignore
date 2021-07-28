@@ -7,3 +7,4 @@ test
 .babelrc
 debug.js
 jest.config.js
+nextcloud-chunk-file-upload.iml
