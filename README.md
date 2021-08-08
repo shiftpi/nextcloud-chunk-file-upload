@@ -4,12 +4,16 @@ Upload files to Nextcloud using chunks
 Nextcloud offers a chunked upload library, which makes your life a lot easier, if you want to upload large files to
 your Nextcloud instance over a bad network.
 
-Use this library if you want to build some sort of upload client in node.js and do that with the joy of Promises 👌.
+Use this library if you want to build some sort of upload client in node.js and do that with the joy of Promises 🙌.
 
 ## Installation
 This package is published on NPM so you can simply type:
 ```
 npm install --save nextcloud-chunk-file-upload
+```
+or
+```
+yarn add nextcloud-chunk-file-upload
 ```
 
 ## Usage
