@@ -12,6 +12,5 @@ jobs:
       - name: Start Nextcloud host
         run: |
           docker run -d -p 8080:80 --name nextcloud_host nextcloud:latest
-          ls -alh
-          docker cp integation-test/setup.sh nextcloud_host:/setup.sh
+          docker cp integration-test/setup.sh nextcloud_host:/setup.sh
           docker exec --user www-data nextcloud_host sh /setup.sh
