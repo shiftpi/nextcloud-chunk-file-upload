@@ -16,5 +16,4 @@ php occ config:app:set password_policy expiration --value 0
 php occ config:app:set password_policy maximumLoginAttempts --value 0
 
 # Create the test user
-EXPORT OC_PASS=testsecret
 php occ user:add --password-from-env testuser
