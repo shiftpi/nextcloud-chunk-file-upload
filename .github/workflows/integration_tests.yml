@@ -1,0 +1,16 @@
+name: Integration tests
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Start Nextcloud host
+        run: |
+          docker run -d -p 8080:80 --name nextcloud_host nextcloud:latest
+          docker cp integation-test/setup.sh nextcloud_host:/setup.sh
+          docker exec --user www-data nextcloud_host sh /setup.sh
