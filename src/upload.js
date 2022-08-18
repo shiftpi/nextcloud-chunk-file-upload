@@ -19,13 +19,13 @@ class Upload {
 
   uploadFile(localPath, remotePath, chunkSize = 2 * 1024 * 1024, retryChunks = 5) {
     return new Promise((async (resolve, reject) => {
-      const chunkPath = `${this.#uploadUrl}/${remotePath.replace(/^\/+/, '')}-${crypto.randomBytes(16).toString('hex')}`;
+      const chunkPath = `${this.#uploadUrl}/${crypto.randomBytes(32).toString('hex')}`;
 
       await axios.request({
         method: 'mkcol',
         url: chunkPath,
         auth: this.#auth
-      }).catch(() => reject(new Event(localPath, null, 'Failed creating directory')));
+      }).catch(e => reject(new Event(localPath, null, 'Failed creating directory', false, e?.response)));
 
       const identifierLength = ('' + fs.statSync(localPath)['size']).length;
 
@@ -52,6 +52,7 @@ class Upload {
           chunkOffset++;
 
           let success = false;
+          let lastHttpErrorEvent;
 
           for (let i = 0; i <= retryChunks && !success; i++) {
             success = await axios.request({
@@ -60,11 +61,14 @@ class Upload {
               auth: this.#auth,
               data: chunk
             }).then(() => true)
-              .catch(() => false);
+              .catch(e => {
+                lastHttpErrorEvent = e;
+                return false;
+              });
           }
 
           if (!success) {
-            return reject(new Event(localPath, chunkNo, 'Failed uploading chunk, max retries reached'));
+            return reject(new Event(localPath, chunkNo, 'Failed uploading chunk, max retries reached', false, lastHttpErrorEvent?.response));
           }
 
           chunkNo++;
@@ -78,7 +82,7 @@ class Upload {
             Destination: `${this.#filesUrl}/${remotePath.replace(/^\/+/, '')}`
           }
         }).then(() => resolve(new Event(localPath, chunkNo, null, true)))
-          .catch(() => reject(new Event(localPath, chunkNo, 'Failed to glue the chunks together')));
+          .catch(e => reject(new Event(localPath, chunkNo, 'Failed to glue the chunks together', false, e?.response)));
       }).on('error', () => {
         reject(new Event(localPath, chunkNo, 'Failed reading the local file'));
       });

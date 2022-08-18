@@ -1,9 +1,11 @@
 class Event {
-  constructor(filename, chunkNo, message = null, complete = false) {
+  constructor(filename, chunkNo, message = null, complete = false, axiosResponse = null) {
     this.filename = filename;
     this.chunkNo = chunkNo;
     this.message = message;
     this.complete = complete;
+    this.httpErrorCode = axiosResponse?.status ?? null;
+    this.httpErrorMessage = axiosResponse?.data ?? null;
   }
 
   toString() {

@@ -17,17 +17,17 @@ axios.request = config => {
 
   if (
     (config.method.match(/^mkcol$/i)
-      && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/foo\/bar\/baz\.jpg-[0-9a-f]{32}$/i))
+      && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/[0-9a-f]{64}$/i))
     || (config.method.match(/^put$/i)
-      && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/foo\/bar\/baz.jpg-[0-9a-f]{32}\/\d{3}-\d{3}$/i))
+      && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/[0-9a-f]{64}\/\d{3}-\d{3}$/i))
     || (config.method.match(/^move$/i)
-      && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/foo\/bar\/baz.jpg-[0-9a-f]{32}\/\.file$/i)
+      && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/[0-9a-f]{64}\/\.file$/i)
       && config.headers.Destination === 'https://remoteurl/files/foospace/foo/bar/baz.jpg')
   ) {
     return axios.__failingMethod === config.method.toLowerCase() && axios.__retriesTillPass + 1 >= axios[`__${config.method.toLowerCase()}Cnt`]
       ? Promise.reject() : Promise.resolve();
   } else {
-    fail(new Error('Unexpected request'));
+    throw new Error('Unexpected request');
   }
 };
 
