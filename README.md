@@ -46,12 +46,14 @@ The return value of this method is Promise, indicating the success or failure of
 upload.
 
 #### Member variables
-|Name    |Type   |Description                         |
-|--------|-------|------------------------------------|
-|filename|string |Local file path                     |
-|chunkNo |number |Sequence number of the current chunk|
-|message |string |Event reason                        |
-|complete|boolean|Whether the upload was successful   |
+|Name            |Type   |Description                         |
+|----------------|-------|------------------------------------|
+|filename        |string |Local file path                     |
+|chunkNo         |number |Sequence number of the current chunk|
+|message         |string |Event reason                        |
+|complete        |boolean|Whether the upload was successful   |
+|httpErrorCode   |number |HTTP response code, if upload failed|
+|httpErrorMessage|string |HTTP response body, if upload failed|
 
 #### Methods
 **toString(): string**
