@@ -30,6 +30,7 @@ describe('upload', () => {
     const uploader = new Upload('https://remoteurl', 'foospace', 'foo', 'bar');
 
     return uploader.uploadFile('/foobar.jpg', '/foo/bar/baz.jpg', 100, 1)
+      .then(() => expect(true).toBeFalsy())
       .catch(e => {
         expect(require('axios').__mkcolCnt).toBe(1);
         expect(require('axios').__putCnt).toBe(0);
@@ -46,6 +47,7 @@ describe('upload', () => {
     require('axios').__failingMethod = 'mkcol';
 
     return uploader.uploadFile('/foobar.jpg', '/foo/bar/baz.jpg', 100, 1)
+      .then(() => expect(true).toBeFalsy())
       .catch(e => {
         expect(require('axios').__mkcolCnt).toBe(1);
         expect(require('axios').__putCnt).toBe(0);
@@ -62,6 +64,7 @@ describe('upload', () => {
     require('axios').__failingMethod = 'put';
 
     return uploader.uploadFile('/foobar.jpg', '/foo/bar/baz.jpg', 100, 3)
+      .then(() => expect(true).toBeFalsy())
       .catch(e => {
         expect(require('axios').__mkcolCnt).toBe(1);
         expect(require('axios').__putCnt).toBe(6);
@@ -95,6 +98,7 @@ describe('upload', () => {
     require('axios').__failingMethod = 'move';
 
     return uploader.uploadFile('/foobar.jpg', '/foo/bar/baz.jpg', 100, 3)
+      .then(() => expect(true).toBeFalsy())
       .catch(e => {
         expect(require('axios').__mkcolCnt).toBe(1);
         expect(require('axios').__putCnt).toBe(4);
