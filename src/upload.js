@@ -40,11 +40,13 @@ class Upload {
       for (let dir of dirs) {
         currentPath += `/${dir}`;
         
-        await (this.#createDir(`${this.#filesUrl}${currentPath}`).catch(e => {
-          if (!e?.response?.data?.includes('<s:message>The resource you tried to create already exists</s:message>')) {
-            reject(e);
+        try {
+          await this.#createDir(`${this.#filesUrl}${currentPath}`);
+        } catch (e) {
+          if (!e?.response?.data || !e.response.data.includes('<s:message>The resource you tried to create already exists</s:message>')) {
+            return reject(e);
           }
-        }));
+        }
       }
       
       resolve();
@@ -55,8 +57,11 @@ class Upload {
     return new Promise((async (resolve, reject) => {
       const chunkPath = `${this.#uploadUrl}/${crypto.randomBytes(32).toString('hex')}`;
       
-      await (this.#createDir(chunkPath)
-        .catch(e => reject(new Event(localPath, null, 'Failed creating temporary upload directory', false, e?.response))));
+      try {
+        await this.#createDir(chunkPath);
+      } catch (e) {
+        return reject(new Event(localPath, null, 'Failed creating temporary upload directory', false, e?.response));
+      }
       
       const identifierLength = ('' + fs.statSync(localPath)['size']).length;
       
@@ -86,16 +91,19 @@ class Upload {
           let lastHttpErrorEvent;
           
           for (let i = 0; i <= retryChunks && !success; i++) {
-            success = await axios.request({
-              method: 'put',
-              url: `${chunkPath}/${offsetIdentifier}-${limitIdentifier}`,
-              auth: this.#auth,
-              data: chunk
-            }).then(() => true)
-              .catch(e => {
-                lastHttpErrorEvent = e;
-                return false;
+            try {
+              await axios.request({
+                method: 'put',
+                url: `${chunkPath}/${offsetIdentifier}-${limitIdentifier}`,
+                auth: this.#auth,
+                data: chunk
               });
+              
+              success = true;
+            } catch (e) {
+              lastHttpErrorEvent = e;
+              success = false;
+            }
           }
           
           if (!success) {
@@ -107,19 +115,28 @@ class Upload {
         
         if (createDirsRecursively) {
           const remoteDir = path.dirname(remotePath);
-          await (this.#createDirsRecursively(remoteDir)
-            .catch(e => reject(new Event(localPath, null, `Failed creating remote directory ${remoteDir}`, false, e?.response))));
+          
+          try {
+            await this.#createDirsRecursively(remoteDir);
+          } catch (e) {
+            return reject(new Event(localPath, null, `Failed creating remote directory ${remoteDir}`, false, e?.response));
+          }
         }
         
-        await axios.request({
-          method: 'move',
-          url: `${chunkPath}/.file`,
-          auth: this.#auth,
-          headers: {
-            Destination: `${this.#filesUrl}/${remotePath.replace(/^\/+/, '')}`
-          }
-        }).then(() => resolve(new Event(localPath, chunkNo, null, true)))
-          .catch(e => reject(new Event(localPath, chunkNo, 'Failed to glue the chunks together', false, e?.response)));
+        try {
+          await axios.request({
+            method: 'move',
+            url: `${chunkPath}/.file`,
+            auth: this.#auth,
+            headers: {
+              Destination: `${this.#filesUrl}/${remotePath.replace(/^\/+/, '')}`
+            }
+          });
+          
+          resolve(new Event(localPath, chunkNo, null, true));
+        } catch (e) {
+          reject(new Event(localPath, chunkNo, 'Failed to glue the chunks together', false, e?.response));
+        }
       }).on('error', () => {
         reject(new Event(localPath, chunkNo, 'Failed reading the local file'));
       });
