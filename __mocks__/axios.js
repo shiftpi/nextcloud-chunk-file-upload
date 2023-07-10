@@ -1,4 +1,4 @@
-let axios = jest.genMockFromModule('axios');
+let axios = jest.createMockFromModule('axios');
 
 axios.reset = () => {
   axios.__failingMethod = null;
@@ -30,7 +30,7 @@ axios.request = config => {
   );
   
   if (config.auth.username !== 'foo' || config.auth.password !== 'bar') {
-    fail(new Error('Invalid credentials'));
+    throw new Error('Invalid credentials');
   }
   
   axios[`__${config.method.toLowerCase()}Cnt`]++;
