@@ -1,6 +1,6 @@
 {
   "name": "nextcloud-chunk-file-upload",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Nextcloud chunk file upload client",
   "main": "dist/index.js",
   "author": "Andreas Rutz <andreas.rutz@posteo.de>",
@@ -33,5 +33,6 @@
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/preset-env": "^7.15.8",
     "jest": "^27.3.1"
-  }
+  },
+  "packageManager": "yarn@3.6.4"
 }
