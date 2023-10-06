@@ -4,6 +4,7 @@ coverage
 node_modules
 src
 test
+script
 .babelrc
 debug.js
 jest.config.js
