@@ -1,4 +1,9 @@
-debug.js
+script/.yarn/*
+!script/.yarn/releases
+!script/.yarn/patches
+!script/.yarn/plugins
+!script/.yarn/sdks
+!script/.yarn/versions
 
 # Created by https://www.toptal.com/developers/gitignore/api/node,macos,intellij+all,yarn
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,macos,intellij+all,yarn

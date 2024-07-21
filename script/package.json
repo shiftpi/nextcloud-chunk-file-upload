@@ -1,0 +1,18 @@
+{
+  "name": "nextcloud-chunk-file-upload-script",
+  "version": "1.0.0",
+  "description": "Test script for Nextcloud chunk file upload client",
+  "main": "testupload.js",
+  "author": "Andreas Rutz <andreas.rutz@posteo.de>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "tsx testupload.ts"
+  },
+  "dependencies": {
+    "@types/node": "^20.14.11",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
+  },
+  "packageManager": "yarn@3.6.4"
+}

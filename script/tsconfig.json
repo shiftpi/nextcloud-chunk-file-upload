@@ -1,0 +1,22 @@
+{
+  "include": [
+    "testupload.ts"
+  ],
+  "exclude": [],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "lib": [
+      "es2020"
+    ],
+    "module": "es2022",
+    "preserveConstEnums": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "sourceMap": false,
+    "target": "es2022",
+    "types": [
+      "node"
+    ],
+    "outDir": "."
+  }
+}
