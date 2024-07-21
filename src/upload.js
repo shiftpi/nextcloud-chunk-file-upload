@@ -53,7 +53,19 @@ class Upload {
     }));
   }
   
-  uploadFile(localPath, remotePath, chunkSize = 2 * 1024 * 1024, retryChunks = 5, createDirsRecursively = false) {
+  async #deleteChunks(chunkPath) {
+    try {
+      await axios.request({
+        method: 'delete',
+        url: chunkPath,
+        auth: this.#auth
+      });
+    } catch (e) {
+      // Ignore delete errors
+    }
+  }
+
+  uploadFile(localPath, remotePath, chunkSize = 2 * 1024 * 1024, retryChunks = 5, createDirsRecursively = false, deleteChunksOnFailure = false) {
     return new Promise((async (resolve, reject) => {
       const chunkPath = `${this.#uploadUrl}/${crypto.randomBytes(32).toString('hex')}`;
       
@@ -98,7 +110,7 @@ class Upload {
                 auth: this.#auth,
                 data: chunk
               });
-              
+
               success = true;
             } catch (e) {
               lastHttpErrorEvent = e;
@@ -107,6 +119,10 @@ class Upload {
           }
           
           if (!success) {
+            if (deleteChunksOnFailure) {
+              await this.#deleteChunks(chunkPath);
+            }
+            
             return reject(new Event(localPath, chunkNo, 'Failed uploading chunk, max retries reached', false, lastHttpErrorEvent?.response));
           }
           
@@ -119,6 +135,10 @@ class Upload {
           try {
             await this.#createDirsRecursively(remoteDir);
           } catch (e) {
+            if (deleteChunksOnFailure) {
+              await this.#deleteChunks(chunkPath);
+            }
+            
             return reject(new Event(localPath, null, `Failed creating remote directory ${remoteDir}`, false, e?.response));
           }
         }
@@ -135,7 +155,11 @@ class Upload {
           
           resolve(new Event(localPath, chunkNo, null, true));
         } catch (e) {
-          reject(new Event(localPath, chunkNo, 'Failed to glue the chunks together', false, e?.response));
+          if (deleteChunksOnFailure) {
+            await this.#deleteChunks(chunkPath);
+          }
+          
+          return reject(new Event(localPath, chunkNo, 'Failed to glue the chunks together', false, e?.response));
         }
       }).on('error', () => {
         reject(new Event(localPath, chunkNo, 'Failed reading the local file'));
