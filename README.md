@@ -40,15 +40,19 @@ The return value of this method is Promise, indicating the success or failure of
 | username  | yes      | string |         | Credentials: Username                                                   |
 | password  | yes      | string |         | Credentials: Password                                                   |
 
-**uploadFile(localPath, remotePath, chunkSize, retryChunks, createDirsRecursively): Promise&lt;Event&gt;**
+**uploadFile(localPath, remotePath, chunkSize, retryChunks, createDirsRecursively, deleteChunksOnFailure): Promise&lt;Event&gt;**
 
-| Name                  | Required | Type    | Default | Description                                       |
-|-----------------------|----------|---------|---------|---------------------------------------------------|
-| localPath             | yes      | string  |         | Path of file on local machine                     |
-| remotePath            | yes      | string  |         | Path the file should be placed on the server      |
-| chunkSize             | no       | number  | 2MB     | The max size of chunks in bytes                   |
-| retryChunks           | no       | number  | 5       | Number of retry attempts for uploading a chunk    |
-| createDirsRecursively | no       | boolean | false   | Create sub directories of upload path recursively | 
+| Name                      | Required | Type    | Default | Description                                                  |
+|---------------------------|----------|---------|---------|--------------------------------------------------------------|
+| localPath                 | yes      | string  |         | Path of file on local machine                                |
+| remotePath                | yes      | string  |         | Path the file should be placed on the server                 |
+| chunkSize                 | no       | number  | 2MB     | The max size of chunks in bytes                              |
+| retryChunks               | no       | number  | 5       | Number of retry attempts for uploading a chunk               |
+| createDirsRecursively     | no       | boolean | false   | Create sub directories of upload path recursively            | 
+| deleteChunksOnFailure[^1] | no       | boolean | false   | Delete uploaded chunk files when the upload operation failed |
+
+[^1]: It's recommended to set this parameter to ``true``. Setting it to ``false`` leads to wasting memory when uploads fail.
+The default value is ``false`` to keep compatibility to older versions. 
 
 ### Event
 
@@ -81,7 +85,7 @@ const Upload = require('nextcloud-chunk-file-upload');
 
 const upload = new Upload('https://example.com/remote.php/dav', 'myuser', 'myspace', 'secret');
 
-upload.uploadFile('/path/to/localfile.jpg', '/path/to/remotefile.jpg')
+upload.uploadFile('/path/to/localfile.jpg', '/path/to/remotefile.jpg', undefined, undefined, true, true)
   .then(event => {
     console.log('Success!');
     console.log(event.toString());

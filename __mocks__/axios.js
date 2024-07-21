@@ -9,6 +9,7 @@ axios.reset = () => {
   axios.__mkcolCnt = 0;
   axios.__putCnt = 0;
   axios.__moveCnt = 0;
+  axios.__deleteCnt = 0;
 };
 
 axios.request = config => {
@@ -20,8 +21,8 @@ axios.request = config => {
     );
   
   const isPut = config.method.match(/^put$/i) && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/[0-9a-f]{64}\/\d{3}-\d{3}$/i);
-  
   const isMove = config.method.match(/^move$/i) && config.url.startsWith('https://remoteurl/uploads/foospace') && config.url.endsWith('.file');
+  const isDelete = config.method.match(/^delete$/i) && config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/[0-9a-f]{64}$/i);
   
   const isMkcolFail = axios.__failingMethod === 'mkcol' && config.method.match(/^mkcol$/i) && (
     config.url.match(/^https:\/\/remoteurl\/uploads\/foospace\/[0-9a-f]{64}$/i) && axios.__failingUrl === '/'
@@ -35,7 +36,7 @@ axios.request = config => {
   
   axios[`__${config.method.toLowerCase()}Cnt`]++;
   
-  if (isMkcol || isPut || isMove) {
+  if (isMkcol || isPut || isMove || isDelete) {
     return (isMkcolFail
     || (axios.__failingMethod !== 'mkcol' && axios.__failingMethod === config.method.toLowerCase() && axios.__retriesTillPass + 1 >= axios[`__${config.method.toLowerCase()}Cnt`]))
       ? Promise.reject(axios.__rejectData) : Promise.resolve();
