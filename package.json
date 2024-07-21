@@ -13,7 +13,7 @@
     "chunk"
   ],
   "scripts": {
-    "build": "babel --out-dir dist/ src/",
+    "build": "babel --out-dir dist/ src/ && tsc",
     "test": "jest"
   },
   "repository": {
@@ -32,7 +32,9 @@
     "@babel/core": "^7.24.9",
     "@babel/plugin-transform-class-properties": "^7.24.7",
     "@babel/preset-env": "^7.24.8",
-    "jest": "^29.7.0"
+    "@types/node": "^20.14.11",
+    "jest": "^29.7.0",
+    "typescript": "^5.5.3"
   },
   "packageManager": "yarn@3.6.4"
 }
