@@ -1,4 +1,4 @@
-const fs = jest.genMockFromModule('fs');
+const fs = jest.createMockFromModule('fs');
 const ReadStream = require('./readStream');
 
 fs.reset = () => {
